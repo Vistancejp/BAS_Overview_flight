@@ -1,0 +1,57 @@
+_schema-version: "3.2"
+ID: GY_Overview_App
+version: 0.0.1
+modules:
+- name: GY_Overview_App-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: GY_Overview_App-destination-service
+    parameters:
+      content-target: true
+  - name: GY_Overview_App_html_repo_host
+    parameters:
+      service-key:
+        name: GY_Overview_App_html_repo_host-key
+  - name: uaa_GY_Overview_App
+    parameters:
+      service-key:
+        name: uaa_GY_Overview_App-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: GY_Overview_PJ_GY_Overview_App_html_repo_host
+          ServiceInstanceName: GY_Overview_App-html5-app-host-service
+          ServiceKeyName: GY_Overview_App_html_repo_host-key
+          sap.cloud.service: GY_Overview_PJ
+        - Authentication: OAuth2UserTokenExchange
+          Name: GY_Overview_PJ_uaa_GY_Overview_App
+          ServiceInstanceName: GY_Overview_App-xsuaa-service
+          ServiceKeyName: uaa_GY_Overview_App-key
+          sap.cloud.service: GY_Overview_PJ
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+resources:
+- name: GY_Overview_App-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      version: 1.0.0
+    service: destination
+    service-name: GY_Overview_App-destination-service
+    service-plan: lite
+- name: GY_Overview_App_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: GY_Overview_App-html5-app-host-service
+    service-plan: app-host
+- name: uaa_GY_Overview_App
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: GY_Overview_App-xsuaa-service
+    service-plan: application
